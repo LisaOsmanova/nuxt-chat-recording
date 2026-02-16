@@ -24,6 +24,9 @@ useSeoMeta({
 
 <template>
   <UApp>
-    <UButton>Click me</UButton>
+    <NuxtRouteAnnouncer />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </UApp>
 </template>
