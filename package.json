@@ -16,7 +16,9 @@
     "@iconify-json/lucide": "^1.2.89",
     "@iconify-json/simple-icons": "^1.2.70",
     "@nuxt/ui": "^4.4.0",
+    "ai": "4.1.51",
     "nuxt": "^4.3.1",
+    "ollama-ai-provider": "1.2.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
