@@ -1,37 +1,29 @@
 <script setup lang="ts">
-import type { Chat, ChatMessage } from '~/types'
+import type { Chat, ChatMessage } from "~/types";
 
 const props = defineProps<{
-  messages: ChatMessage[]
-  chat: Chat
-  typing: boolean
-}>()
+  messages: ChatMessage[];
+  chat: Chat;
+  typing: boolean;
+}>();
 
-const emit = defineEmits(['send-message'])
+const emit = defineEmits(["send-message"]);
 
 function handleSendMessage(message: string) {
-  emit('send-message', message)
+  emit("send-message", message);
 }
 
-const { showScrollButton, scrollToBottom, pinToBottom } = useChatScroll()
+const { showScrollButton, scrollToBottom, pinToBottom } = useChatScroll();
 
-watch(() => props.messages, pinToBottom, { deep: true })
+watch(() => props.messages, pinToBottom, { deep: true });
 </script>
 
 <template>
-  <div
-    ref="scrollContainer"
-    class="scroll-container"
-  >
+  <div ref="scrollContainer" class="scroll-container">
     <UContainer class="chat-container">
-      <div
-        v-if="!messages?.length"
-        class="empty-state"
-      >
+      <div v-if="!messages?.length" class="empty-state">
         <div class="empty-state-card">
-          <h2 class="empty-state-title">
-            Start your chat
-          </h2>
+          <h2 class="empty-state-title">Start your chat</h2>
           <ChatInput @send-message="handleSendMessage" />
         </div>
       </div>
@@ -49,13 +41,14 @@ watch(() => props.messages, pinToBottom, { deep: true })
             class="message"
             :class="{
               'message-user': message.role === 'user',
-              'message-ai': message.role === 'assistant'
+              'message-ai': message.role === 'assistant',
             }"
           >
             <div class="message-content">
               {{ message.content }}
             </div>
           </div>
+          <span v-if="typing" class="typing-indicator"> &#9611; </span>
         </div>
 
         <div class="message-form-container">
@@ -204,5 +197,11 @@ watch(() => props.messages, pinToBottom, { deep: true })
 
 .message-input::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
+}
+
+.typing-indicator {
+  display: inline-block;
+  animation: pulse 1s infinite;
+  margin-left: 0.25rem;
 }
 </style>
