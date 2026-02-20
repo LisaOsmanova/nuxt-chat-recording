@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const { chat, messages, sendMessage } = useChat()
 const typing = ref(false)
 

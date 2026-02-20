@@ -53,7 +53,7 @@ watch(() => props.messages, pinToBottom, { deep: true })
             }"
           >
             <div class="message-content">
-              {{ message.content }}
+              <MarkdownRender :content="message.content" />
             </div>
           </div>
           <span
