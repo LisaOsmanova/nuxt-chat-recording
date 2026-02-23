@@ -1,37 +1,36 @@
-import type { Chat, ChatMessage } from '~/types'
-import { MOCK_CHAT } from './mockData'
+import type { ChatMessage } from "../types";
 
-export default function useChat() {
-  const chat = ref<Chat>(MOCK_CHAT)
-  const messages = computed<ChatMessage[]>(() => chat.value.messages)
+export default function useChat(chatId: string) {
+  const { chats } = useChats();
+  const chat = computed(() => chats.value.find((c) => c.id === chatId));
+  const messages = computed<ChatMessage[]>(() => chat.value?.messages || []);
 
-  function createMessage(message: string, role: ChatMessage['role']) {
-    const id = messages.value.length.toString()
+  function createMessage(message: string, role: ChatMessage["role"]) {
+    const id = messages.value.length.toString();
 
     return {
       id,
       role,
-      content: message
-    }
+      content: message,
+    };
   }
 
   async function sendMessage(message: string) {
-    messages.value.push(createMessage(message, 'user'))
+    messages.value.push(createMessage(message, "user"));
 
-    const data = await $fetch<ChatMessage>('/api/ai', {
-      method: 'POST',
+    const data = await $fetch<ChatMessage>("/api/ai", {
+      method: "POST",
       body: {
-        messages: messages.value
-      }
-    })
+        messages: messages.value,
+      },
+    });
 
-    messages.value.push(data)
+    messages.value.push(data);
   }
 
   return {
     chat,
     messages,
-    createMessage,
-    sendMessage
-  }
+    sendMessage,
+  };
 }
