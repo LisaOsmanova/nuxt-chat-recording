@@ -1,16 +1,21 @@
 <script setup lang="ts">
-const appConfig = useAppConfig();
-const { createChat } = useChats();
+const appConfig = useAppConfig()
+const { createChat } = useChats()
 
 const handleCreateChat = () => {
-  createChat();
-};
+  createChat()
+}
 </script>
 
 <template>
   <UContainer class="page-container">
     <span class="text-2xl font-bold mb-2">{{ appConfig.title }}</span>
-    <UButton @click="handleCreateChat" class="button"> Start Chat </UButton>
+    <UButton
+      class="button"
+      @click="handleCreateChat"
+    >
+      Start Chat
+    </UButton>
   </UContainer>
 </template>
 

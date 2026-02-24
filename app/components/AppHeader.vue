@@ -1,17 +1,24 @@
 <script setup lang="ts">
-const appConfig = useAppConfig();
-const { createChat } = useChats();
+const appConfig = useAppConfig()
+const { createChat } = useChats()
 
 const handleCreateChat = () => {
-  createChat();
-};
+  createChat()
+}
 </script>
 
 <template>
   <header class="app-header">
     <div class="header-left">
-      <UButton icon="i-lucide-menu" color="primary" variant="soft" />
-      <UButton icon="i-lucide-plus" @click="handleCreateChat">
+      <UButton
+        icon="i-lucide-menu"
+        color="primary"
+        variant="soft"
+      />
+      <UButton
+        icon="i-lucide-plus"
+        @click="handleCreateChat"
+      >
         New Chat
       </UButton>
     </div>

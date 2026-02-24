@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import type { Chat, ChatMessage } from '~/types'
+import type { ChatMessage, Chat } from '../types'
 
 const props = defineProps<{
   messages: ChatMessage[]
-  chat: Chat
+  chat: Chat | undefined
   typing: boolean
 }>()
 
 const emit = defineEmits(['send-message'])
 
+const { showScrollButton, scrollToBottom, pinToBottom } = useChatScroll()
+
 function handleSendMessage(message: string) {
   emit('send-message', message)
 }
-
-const { showScrollButton, scrollToBottom, pinToBottom } = useChatScroll()
 
 watch(() => props.messages, pinToBottom, { deep: true })
 </script>
@@ -56,6 +56,7 @@ watch(() => props.messages, pinToBottom, { deep: true })
               <MarkdownRender :content="message.content" />
             </div>
           </div>
+
           <span
             v-if="typing"
             class="typing-indicator"
