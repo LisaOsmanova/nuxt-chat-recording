@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const appConfig = useAppConfig()
-const { createChat } = useChats()
+const { createChatAndNavigate } = useChats()
 
-const handleCreateChat = () => {
-  createChat()
+async function handleCreateChat() {
+  await createChatAndNavigate({ projectId: '1' })
 }
 </script>
 
