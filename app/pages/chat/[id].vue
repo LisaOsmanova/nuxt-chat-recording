@@ -35,9 +35,9 @@ useHead({
 
 <template>
   <ChatWindow
+    :typing
     :chat
     :messages
-    :typing
     @send-message="handleSendMessage"
   />
 </template>
