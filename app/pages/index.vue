@@ -1,21 +1,16 @@
 <script setup lang="ts">
-const appConfig = useAppConfig()
-const { createChatAndNavigate } = useChats()
+const appConfig = useAppConfig();
+const { createChatAndNavigate } = useChats();
 
 async function handleCreateChat() {
-  await createChatAndNavigate({ projectId: '1' })
+  await createChatAndNavigate({ projectId: "1" });
 }
 </script>
 
 <template>
   <UContainer class="page-container">
     <span class="text-2xl font-bold mb-2">{{ appConfig.title }}</span>
-    <UButton
-      class="button"
-      @click="handleCreateChat"
-    >
-      Start Chat
-    </UButton>
+    <UButton class="button" @click="handleCreateChat"> Start Chat </UButton>
   </UContainer>
 </template>
 
