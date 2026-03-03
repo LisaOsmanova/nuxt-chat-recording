@@ -1,13 +1,52 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
-import type { Chat } from '../types'
+import type { Chat, Project } from '../types'
 
 defineProps<{
   isOpen: boolean
 }>()
 
 const route = useRoute()
-const { chats, createChatAndNavigate } = useChats()
+const { chats, chatsInProject, createChatAndNavigate } = useChats()
+const { projects, createProject } = useProjects()
+
+function formatProjectItem(project: Project): NavigationMenuItem {
+  const isCurrent = isCurrentProject(project.id)
+
+  const baseItem: NavigationMenuItem = {
+    label: project.name,
+    to: `/projects/${project.id}`,
+    active: isCurrent,
+    defaultOpen: isCurrent
+  }
+
+  if (isCurrent) {
+    return {
+      ...baseItem,
+      children: chatsInCurrentProject.value.map(chat =>
+        formatProjectChat(project, chat)
+      )
+    }
+  }
+  return baseItem
+}
+
+function formatProjectChat(project: Project, chat: Chat): NavigationMenuItem {
+  return {
+    label: chat.title || 'Untitled Chat',
+    to: `/projects/${project.id}/chats/${chat.id}`,
+    active: route.params.id === chat.id
+  }
+}
+
+async function handleCreateProject() {
+  const newProject = await createProject()
+  await createChatAndNavigate({ projectId: newProject.id })
+}
+
+const projectItems = computed<NavigationMenuItem[]>(
+  () => projects.value.map(formatProjectItem) || []
+)
 
 const chatsWithoutProject = computed(() =>
   chats.value.filter(c => c.projectId === undefined)
@@ -23,8 +62,15 @@ function filterChats(startDays: number, endDays?: number) {
   })
 }
 
+function isCurrentProject(projectId: string): boolean {
+  return route.params.projectId === projectId
+}
+
+const chatsInCurrentProject = computed(() =>
+  chatsInProject(route.params.projectId as string)
+)
+
 const todayChats = filterChats(-1, 1)
-const lastWeekChats = filterChats(1, 7)
 const lastMonthChats = filterChats(7, 30)
 const olderChats = filterChats(30)
 
@@ -52,7 +98,7 @@ async function handleCreateChat() {
     >
       <div
         v-if="todayChats.length > 0"
-        class="mb-4"
+        class="mb-4 overflow-auto p-r border-b"
       >
         <div class="flex justify-between items-center mb-2">
           <h2 class="text-sm font-semibold text-(--ui-text-muted)">
@@ -67,20 +113,30 @@ async function handleCreateChat() {
         />
       </div>
       <div
-        v-if="lastWeekChats.length > 0"
+        v-if="projectItems.length > 0"
         class="mb-4"
       >
         <div class="flex justify-between items-center mb-2">
           <h2 class="text-sm font-semibold text-(--ui-text-muted)">
-            Last 7 Days
+            Projects
           </h2>
         </div>
         <UNavigationMenu
           orientation="vertical"
           class="w-full mb-4"
-          :items="lastWeekChats"
+          :items="projectItems"
           default-open
         />
+        <UButton
+          size="sm"
+          color="neutral"
+          variant="soft"
+          icon="i-heroicons-plus-small"
+          class="mt-2 w-full"
+          @click="handleCreateProject"
+        >
+          New Project
+        </UButton>
       </div>
       <div
         v-if="lastMonthChats.length > 0"
