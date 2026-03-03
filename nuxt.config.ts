@@ -1,41 +1,12 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/mdc'],
+  compatibilityDate: "2024-11-01",
+  devtools: { enabled: true },
 
-  devtools: {
-    enabled: true
-  },
-
-  css: ['~/assets/css/main.css'],
-  mdc: {
-    highlight: {
-      theme: 'material-theme-palenight',
-      langs: ['html', 'markdown', 'vue', 'typescript', 'javascript']
-    }
-  },
-
-  runtimeConfig: {
-    openAiApiKey: ''
-  },
-
-  routeRules: {
-    '/': { prerender: true }
-  },
-
-  compatibilityDate: '2025-01-15',
+  modules: ["@nuxt/eslint"],
 
   vite: {
     optimizeDeps: {
-      include: ['debug']
-    }
+      include: ["debug"],
+    },
   },
-
-  eslint: {
-    config: {
-      stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
-    }
-  }
-})
+});
