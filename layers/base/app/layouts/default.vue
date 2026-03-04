@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const isSidebarOpen = ref(true)
+const isSidebarOpen = ref(true);
 </script>
 
 <template>
@@ -9,7 +9,7 @@ const isSidebarOpen = ref(true)
     <main
       class="main-content transition-all duration-300 ease-in-out"
       :class="{
-        'ml-64': isSidebarOpen
+        'ml-64': isSidebarOpen,
       }"
     >
       <slot />
