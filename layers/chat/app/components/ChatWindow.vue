@@ -1,37 +1,29 @@
 <script setup lang="ts">
-import type { ChatMessage, Chat } from '../types'
+import type { ChatMessage, Chat } from "../../shared/types/types";
 
 const props = defineProps<{
-  messages: ChatMessage[]
-  chat: Chat | undefined
-  typing: boolean
-}>()
+  messages: ChatMessage[];
+  chat: Chat | undefined;
+  typing: boolean;
+}>();
 
-const emit = defineEmits(['send-message'])
+const emit = defineEmits(["send-message"]);
 
-const { showScrollButton, scrollToBottom, pinToBottom } = useChatScroll()
+const { showScrollButton, scrollToBottom, pinToBottom } = useChatScroll();
 
 function handleSendMessage(message: string) {
-  emit('send-message', message)
+  emit("send-message", message);
 }
 
-watch(() => props.messages, pinToBottom, { deep: true })
+watch(() => props.messages, pinToBottom, { deep: true });
 </script>
 
 <template>
-  <div
-    ref="scrollContainer"
-    class="scroll-container"
-  >
+  <div ref="scrollContainer" class="scroll-container">
     <UContainer class="chat-container">
-      <div
-        v-if="!messages?.length"
-        class="empty-state"
-      >
+      <div v-if="!messages?.length" class="empty-state">
         <div class="empty-state-card">
-          <h2 class="empty-state-title">
-            Start your chat
-          </h2>
+          <h2 class="empty-state-title">Start your chat</h2>
           <ChatInput @send-message="handleSendMessage" />
         </div>
       </div>
@@ -49,7 +41,7 @@ watch(() => props.messages, pinToBottom, { deep: true })
             class="message"
             :class="{
               'message-user': message.role === 'user',
-              'message-ai': message.role === 'assistant'
+              'message-ai': message.role === 'assistant',
             }"
           >
             <div class="message-content">
@@ -57,10 +49,7 @@ watch(() => props.messages, pinToBottom, { deep: true })
             </div>
           </div>
 
-          <span
-            v-if="typing"
-            class="typing-indicator"
-          > &#9611; </span>
+          <span v-if="typing" class="typing-indicator"> &#9611; </span>
         </div>
 
         <div class="message-form-container">
