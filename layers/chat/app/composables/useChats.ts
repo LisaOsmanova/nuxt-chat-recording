@@ -1,16 +1,14 @@
 export default function useChats() {
-  // const chats = useState<Chat[]>("chats", () => [MOCK_CHAT]);
-  const { data: chats } = useAsyncData(
-    "chats",
-    () => $fetch<Chat[]>("/api/chats"),
-    {
-      default: () => [],
-    },
-  );
+  const chats = useState<Chat[]>("chats", () => []);
+  const { data, execute, status } = useFetch<Chat[]>("/api/chats", {
+    default: () => [],
+    immediate: false,
+  });
 
   async function fetchChats() {
-    const data = await $fetch<Chat[]>("/api/chats");
-    chats.value = data;
+    if (status.value !== "idle") return;
+    await execute();
+    chats.value = data.value;
   }
 
   function createChat(options: { projectId?: string } = {}) {
@@ -19,7 +17,7 @@ export default function useChats() {
       id,
       title: `Chat ${id}`,
       messages: [],
-      projectId: options.projectId || "",
+      projectId: options.projectId,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -30,11 +28,12 @@ export default function useChats() {
   }
 
   async function createChatAndNavigate(options: { projectId?: string } = {}) {
-    const chat = await createChat(options);
+    const chat = createChat(options);
+
     if (chat.projectId) {
       await navigateTo(`/projects/${chat.projectId}/chats/${chat.id}`);
     } else {
-      navigateTo(`/chat/${chat.id}`);
+      await navigateTo(`/chat/${chat.id}`);
     }
   }
 
@@ -45,8 +44,8 @@ export default function useChats() {
   return {
     chats,
     createChat,
-    chatsInProject,
     createChatAndNavigate,
+    chatsInProject,
     fetchChats,
   };
 }

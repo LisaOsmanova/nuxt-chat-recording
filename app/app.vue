@@ -1,5 +1,6 @@
 <script setup>
-// await fetchChats();
+const { fetchChats } = useChats();
+await fetchChats();
 // const config = useRuntimeConfig()
 // console.log(config)
 
