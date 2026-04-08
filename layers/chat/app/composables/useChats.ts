@@ -29,11 +29,12 @@ export default function useChats() {
 
   async function createChatAndNavigate(options: { projectId?: string } = {}) {
     const chat = await createChat(options);
+    console.log("chat", chat);
 
     if (chat.projectId) {
       await navigateTo(`/projects/${chat.projectId}/chats/${chat.id}`);
     } else {
-      await navigateTo(`/chats/${chat.id}`);
+      await navigateTo(`/chat/${chat.id}`);
     }
   }
 

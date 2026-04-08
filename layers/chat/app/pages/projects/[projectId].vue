@@ -1,59 +1,56 @@
 <script setup lang="ts">
-const route = useRoute()
-const projectId = route.params.projectId as string
+const route = useRoute();
+const projectId = route.params.projectId as string;
 
-const { project, updateProject } = useProject(projectId)
-const { createChatAndNavigate } = useChats()
+const { project, updateProject } = useProject(projectId);
+const { createChatAndNavigate } = useChats();
 
 if (!project.value) {
-  await navigateTo('/', {
-    replace: true
-  })
+  await navigateTo("/", {
+    replace: true,
+  });
 }
 
-const onChatPage = computed(() => route.params.id)
-const isEditing = ref(false)
-const editedName = ref('')
+const onChatPage = computed(() => route.params.id);
+const isEditing = ref(false);
+const editedName = ref("");
 
 function startEditing() {
-  if (!project.value || onChatPage.value) return
+  if (!project.value || onChatPage.value) return;
 
-  editedName.value = project.value.name
-  isEditing.value = true
+  editedName.value = project.value.name;
+  isEditing.value = true;
 }
 
 function cancelEditing() {
-  isEditing.value = false
-  editedName.value = ''
+  isEditing.value = false;
+  editedName.value = "";
 }
 
 async function handleRename() {
-  if (!editedName.value.trim() || !project.value) return
-  if (editedName.value.trim() === project.value.name) return
+  if (!editedName.value.trim() || !project.value) return;
+  if (editedName.value.trim() === project.value.name) return;
 
-  isEditing.value = false
+  isEditing.value = false;
   try {
-    await updateProject({ name: editedName.value.trim() })
+    await updateProject({ name: editedName.value.trim() });
   } catch (error) {
-    console.error('Failed to rename project:', error)
+    console.error("Failed to rename project:", error);
   }
 }
 
 async function handleNewChat() {
   try {
-    await createChatAndNavigate({ projectId })
+    await createChatAndNavigate({ projectId });
   } catch (error) {
-    console.error('Failed to create new chat:', error)
+    console.error("Failed to create new chat:", error);
   }
 }
 </script>
 
 <template>
   <div class="container bg-amber-500">
-    <div
-      v-if="project"
-      class="header"
-    >
+    <div v-if="project" class="header">
       <div class="header-left">
         <div class="title-container">
           <h1
@@ -69,10 +66,7 @@ async function handleNewChat() {
               class="edit-icon"
             />
           </h1>
-          <div
-            v-else
-            class="edit-container"
-          >
+          <div v-else class="edit-container">
             <UInput
               v-model="editedName"
               class="title-input"
@@ -105,18 +99,11 @@ async function handleNewChat() {
           :to="`/projects/${projectId}`"
           class="leading-4 flex items-center mt-1 text-sm text-(--ui-text-muted)"
         >
-          <UIcon
-            name="i-heroicons-arrow-left"
-            class="mr-1"
-          />
+          <UIcon name="i-heroicons-arrow-left" class="mr-1" />
           Back to Project
         </NuxtLink>
       </div>
-      <UButton
-        color="primary"
-        icon="i-heroicons-plus"
-        @click="handleNewChat"
-      >
+      <UButton color="primary" icon="i-heroicons-plus" @click="handleNewChat">
         New Chat in Project
       </UButton>
     </div>
@@ -126,6 +113,8 @@ async function handleNewChat() {
 
 <style scoped>
 .container {
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
   height: calc(100% - 4rem); /* Account for AppHeader */
 }

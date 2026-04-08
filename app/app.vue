@@ -1,6 +1,8 @@
 <script setup>
 const { fetchChats } = useChats();
-await fetchChats();
+const { fetchProjects } = useProjects();
+await Promise.all([fetchChats(), fetchProjects()]);
+
 // const config = useRuntimeConfig()
 // console.log(config)
 

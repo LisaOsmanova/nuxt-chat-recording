@@ -1,10 +1,10 @@
 <script setup lang="ts">
-const route = useRoute()
-const projectId = route.params.projectId as string
+const route = useRoute();
+const projectId = route.params.projectId as string;
 
-const { chatsInProject } = useChats()
+const { chatsInProject } = useChats();
 
-const chats = chatsInProject(projectId)
+const chats = computed(() => chatsInProject(projectId));
 </script>
 
 <template>
