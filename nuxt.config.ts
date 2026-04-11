@@ -4,6 +4,14 @@ export default defineNuxtConfig({
 
   modules: ["@nuxt/eslint"],
 
+  nitro: {
+    storage: {
+      db: {
+        driver: "fs",
+        base: "./.data",
+      },
+    },
+  },
   vite: {
     optimizeDeps: {
       include: ["debug"],
