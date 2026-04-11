@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   if (!id)
     throw createError({ statusCode: 400, message: "Chat ID is required" });
 
-  const chatMessages = getMessagesByChatId(id);
+  const chatMessages = await getMessagesByChatId(id);
   const history = chatMessages.map((m) => ({
     id: m.id,
     role: m.role as "user" | "assistant" | "system",
