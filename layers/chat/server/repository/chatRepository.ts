@@ -1,21 +1,42 @@
 import { v4 as uuidv4 } from "uuid";
 import { getProjectById } from "./projectRepository";
 
-const chats: Chat[] = [MOCK_CHAT];
+const storage = useStorage<Chat[]>("db");
+const chatsKey = "chats:all";
+
+async function getChats(): Promise<Chat[]> {
+  let chats = await storage.getItem(chatsKey);
+
+  if (chats === null) {
+    chats = [MOCK_CHAT];
+    await saveChats(chats);
+  }
+
+  return chats;
+}
+
+async function saveChats(chats: Chat[]): Promise<void> {
+  await storage.setItem(chatsKey, chats);
+}
 
 export async function getAllChats(): Promise<Chat[]> {
-  return chats
-    .map((chat) => {
-      const lastMessage = getLastMessageForChat(chat.id);
+  const chats = await getChats();
+  let transformedChats = await Promise.all(
+    chats.map(async (chat) => {
+      const lastMessage = await getLastMessageForChat(chat.id);
       return {
         ...chat,
         messages: lastMessage ? [lastMessage] : [],
         project: chat.projectId
-          ? getProjectById(chat.projectId) || undefined
+          ? (await getProjectById(chat.projectId)) || undefined
           : undefined,
       };
-    })
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    }),
+  );
+  transformedChats = transformedChats.sort(
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+  );
+  return chats;
 }
 
 export async function createChat(data: {
@@ -31,12 +52,18 @@ export async function createChat(data: {
     createdAt: now,
     updatedAt: now,
   };
+
+  const chats = await getChats();
   chats.push(newChat);
+  await saveChats(chats);
+
   // No messages yet, so lastMessage is always []
   return {
     ...newChat,
     messages: [],
-    project: data.projectId ? getProjectById(data.projectId) || null : null,
+    project: data.projectId
+      ? (await getProjectById(data.projectId)) || null
+      : null,
   };
 }
 
