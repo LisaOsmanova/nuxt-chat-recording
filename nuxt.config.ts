@@ -17,4 +17,14 @@ export default defineNuxtConfig({
       include: ["debug"],
     },
   },
+  $production: {
+    nitro: {
+      storage: {
+        db: {
+          driver: "netlify-blobs",
+          name: "db",
+        },
+      },
+    },
+  },
 });
