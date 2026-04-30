@@ -23,6 +23,7 @@ import { UpdateChatTitleSchema } from "../../../schemas";
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
+  if (!id) return 400;
 
   const { success, data } = await readValidatedBody(
     event,
