@@ -11,6 +11,35 @@ export default function useChats() {
     chats.value = data.value;
   }
 
+  async function prefetchChatMessages() {
+    //to find the 2 most recently updated chats
+    const recentChats = chats.value
+      .toSorted(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      )
+      .slice(0, 2);
+
+    //to prefetch the messages for the 2 most recently updated chats
+    await Promise.all(
+      recentChats.map(async (chat) => {
+        try {
+          console.log(`prefetching ${chat.title}`);
+          const messages = await $fetch<ChatMessage[]>(
+            `/api/chats/${chat.id}/messages`,
+          );
+
+          const targetChat = chats.value.find((c) => c.id === chat.id);
+          if (targetChat) {
+            targetChat.messages = messages;
+          }
+        } catch (error) {
+          console.error(`error prefetching ${chat.id}:`, error);
+        }
+      }),
+    );
+  }
+
   async function createChat(
     options: { projectId?: string; title?: string } = {},
   ) {
@@ -48,5 +77,6 @@ export default function useChats() {
     createChatAndNavigate,
     chatsInProject,
     fetchChats,
+    prefetchChatMessages,
   };
 }
