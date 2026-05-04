@@ -5,17 +5,33 @@ export default function useProject(projectId: string) {
     projects.value.find((p) => p.id === projectId),
   );
 
-  function updateProject(updatedProject: Partial<Project>) {
+  function updateProjectInList(updatedData: Partial<Project>) {
     if (!project.value) return;
 
-    const index = projects.value.findIndex((p) => p.id === projectId);
-    if (index === -1) return;
+    projects.value = projects.value.map((p) =>
+      p.id === projectId ? { ...p, ...updatedData } : p,
+    );
+  }
 
-    projects.value[index] = {
-      ...project.value,
-      ...updatedProject,
-      id: projectId,
-    };
+  async function updateProject(updatedProject: Partial<Project>) {
+    if (!project.value) return;
+
+    const originalProject = { ...project.value };
+    updateProjectInList(updatedProject);
+
+    try {
+      const response = await $fetch<Project>(`/api/projects/${projectId}`, {
+        method: "PUT",
+        body: {
+          ...updatedProject,
+        },
+      });
+      updateProjectInList(response);
+      return response;
+    } catch (error) {
+      console.error("Error updating project", error);
+      updateProjectInList(originalProject);
+    }
   }
 
   return {
