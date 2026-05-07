@@ -14,21 +14,25 @@ export default function useChat(chatId: string) {
 
   async function fetchMessages({
     refresh = false,
-  }: { refresh?: boolean } = {}) {
+  }: {
+    refresh?: boolean;
+  } = {}) {
     const hasExistingMessages = messages.value.length > 1;
-    const ifRequestInProgress = status.value !== "idle";
+    const isRequestInProgress = status.value !== "idle";
     const shouldSkipDueToExistingState =
-      !refresh && (hasExistingMessages || ifRequestInProgress);
+      !refresh && (hasExistingMessages || isRequestInProgress);
 
     if (shouldSkipDueToExistingState || !chat.value) {
       return;
     }
+
     await execute();
     chat.value.messages = data.value;
   }
 
   async function generateChatTitle(message: string) {
     if (!chat.value) return;
+
     const updatedChat = await $fetch<Chat>(`/api/chats/${chatId}/title`, {
       method: "POST",
       body: {
@@ -42,7 +46,7 @@ export default function useChat(chatId: string) {
     if (!chat.value) return;
 
     if (messages.value.length === 0) {
-      await generateChatTitle(message);
+      generateChatTitle(message);
     }
 
     const optimisticUserMessage: ChatMessage = {
@@ -52,10 +56,8 @@ export default function useChat(chatId: string) {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-
     messages.value.push(optimisticUserMessage);
 
-    //to grab the index in order to grab it later
     const userMessageIndex = messages.value.length - 1;
 
     try {
@@ -71,7 +73,7 @@ export default function useChat(chatId: string) {
       );
       messages.value[userMessageIndex] = newMessage;
     } catch (error) {
-      console.error("error sending message:", error);
+      console.error("Error sending user message", error);
       messages.value.splice(userMessageIndex, 1);
       return;
     }
@@ -83,13 +85,12 @@ export default function useChat(chatId: string) {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-
     const lastMessage = messages.value[
       messages.value.length - 1
     ] as ChatMessage;
 
     try {
-      const response = await $fetch<ChatMessage>(
+      const response = await $fetch<ReadableStream>(
         `/api/chats/${chatId}/messages/stream`,
         {
           method: "POST",
@@ -100,27 +101,57 @@ export default function useChat(chatId: string) {
         },
       );
 
-      //to decode the response
-      const decoderStream = response.pipeThrough(new TextDecoderStream());
+      const decodedStream = response.pipeThrough(new TextDecoderStream());
 
-      //to grab each chunk of the response as it comes through the stream
-      const reader = decoderStream.getReader();
+      const reader = decodedStream.getReader();
       await reader.read().then(function processText({
         done,
         value,
       }): Promise<void> | void {
-        if (done) return;
+        if (done) {
+          return;
+        }
+
         lastMessage.content += value;
         return reader.read().then(processText);
       });
     } catch (error) {
-      console.error("error streaming message:", error);
+      console.error("Error streaming message:", error);
     } finally {
-      //to refetch all of these messages again from the db to make sure everything is up to date
       await fetchMessages({ refresh: true });
     }
 
     chat.value.updatedAt = new Date();
+  }
+
+  async function assignToProject(projectId: string | null) {
+    if (!chat.value) return;
+
+    const originalProjectId = chat.value.projectId;
+
+    // Optimistically update the chat
+    chat.value.projectId = projectId || undefined;
+
+    try {
+      const updatedChat = await $fetch<Chat>(`/api/chats/${chatId}`, {
+        method: "PUT",
+        body: {
+          projectId,
+        },
+      });
+
+      // Update the chat in the chats list
+      const chatIndex = chats.value.findIndex((c) => c.id === chatId);
+      if (chatIndex !== -1 && chats.value[chatIndex]) {
+        chats.value[chatIndex].projectId = updatedChat.projectId;
+        chats.value[chatIndex].updatedAt = updatedChat.updatedAt;
+      }
+    } catch (error) {
+      console.error("Error assigning chat to project", error);
+      // Revert optimistic update
+      chat.value.projectId = originalProjectId;
+      throw error;
+    }
   }
 
   return {
@@ -128,5 +159,6 @@ export default function useChat(chatId: string) {
     messages,
     sendMessage,
     fetchMessages,
+    assignToProject,
   };
 }

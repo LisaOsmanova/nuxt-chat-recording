@@ -21,17 +21,17 @@ export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
   if (!id) return 400;
 
-  const { success, data } = await readValidatedBody(
+  const result = await readValidatedBody(
     event,
     UpdateProjectSchema.safeParse,
   );
 
-  const project = await getProjectById(id);
-  if (!project) return 404;
-
-  if (!success) {
+  if (!result.success) {
     return 400;
   }
 
-  return updateProject(id, data);
+  const project = await getProjectById(id);
+  if (!project) return 404;
+
+  return updateProject(id, result.data);
 });
