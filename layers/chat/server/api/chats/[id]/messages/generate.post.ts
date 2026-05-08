@@ -9,8 +9,12 @@ import {
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
-  if (!id)
-    throw createError({ statusCode: 400, message: "Chat ID is required" });
+  if (!id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Chat ID is required",
+    });
+  }
 
   const chatMessages = await getMessagesByChatId(id);
   const history = chatMessages.map((m) => ({

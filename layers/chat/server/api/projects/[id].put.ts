@@ -19,19 +19,32 @@ import { UpdateProjectSchema } from "../../schemas";
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
-  if (!id) return 400;
+  if (!id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Project ID is required",
+    });
+  }
 
-  const result = await readValidatedBody(
+  const { success, data } = await readValidatedBody(
     event,
     UpdateProjectSchema.safeParse,
   );
 
-  if (!result.success) {
-    return 400;
+  if (!success) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Invalid request",
+    });
   }
 
   const project = await getProjectById(id);
-  if (!project) return 404;
+  if (!project) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Project not found",
+    });
+  }
 
-  return updateProject(id, result.data);
+  return updateProject(id, data);
 });

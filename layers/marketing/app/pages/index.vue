@@ -1,13 +1,13 @@
 <script setup lang="ts">
 definePageMeta({
   layout: false,
-})
+});
 
-const appConfig = useAppConfig()
+const appConfig = useAppConfig();
 
-const { createChatAndNavigate } = useChats()
+const { createChatAndNavigate } = useChats();
 async function handleCreateChat() {
-  await createChatAndNavigate()
+  await createChatAndNavigate();
 }
 </script>
 
@@ -20,9 +20,8 @@ async function handleCreateChat() {
           {{ appConfig.title }}
         </h1>
         <p class="hero-subtitle">
-          Experience the future of conversation with our
-          intelligent chat platform. Start meaningful
-          conversations powered by cutting-edge AI
+          Experience the future of conversation with our intelligent chat
+          platform. Start meaningful conversations powered by cutting-edge AI
           technology.
         </p>
         <UButton
@@ -34,63 +33,45 @@ async function handleCreateChat() {
         </UButton>
       </div>
       <div class="hero-image">
-        <img
-          src="/hero.png"
-          alt="Chat Interface Preview"
-          class="hero-img"
-        >
+        <img src="/hero.png" alt="Chat Interface Preview" class="hero-img" />
       </div>
     </UContainer>
 
     <!-- Features Section -->
     <UContainer class="features-section">
       <div class="section-wrapper">
-        <h2 class="section-title">
-          Why Choose Our Chat Platform?
-        </h2>
+        <h2 class="section-title">Why Choose Our Chat Platform?</h2>
         <div class="features-grid">
           <div class="feature-card">
-            <img
+            <NuxtImg
               src="/ai-conversations.png"
               alt="AI Powered"
               class="feature-image"
-            >
-            <h3 class="feature-title">
-              AI-Powered Conversations
-            </h3>
+              width="200"
+              density="1x"
+            />
+            <h3 class="feature-title">AI-Powered Conversations</h3>
             <p class="feature-description">
-              Experience intelligent responses and natural
-              conversation flow with our advanced AI
-              technology.
+              Experience intelligent responses and natural conversation flow
+              with our advanced AI technology.
             </p>
           </div>
 
           <div class="feature-card">
-            <img
-              src="/realtime.png"
-              alt="Real Time"
-              class="feature-image"
-            >
-            <h3 class="feature-title">
-              Real-Time Messaging
-            </h3>
+            <img src="/realtime.png" alt="Real Time" class="feature-image" />
+            <h3 class="feature-title">Real-Time Messaging</h3>
             <p class="feature-description">
-              Instant responses and seamless communication
-              with lightning-fast message delivery.
+              Instant responses and seamless communication with lightning-fast
+              message delivery.
             </p>
           </div>
 
           <div class="feature-card">
-            <img
-              src="/secure.png"
-              alt="Secure"
-              class="feature-image"
-            >
+            <img src="/secure.png" alt="Secure" class="feature-image" />
             <h3 class="feature-title">Secure & Private</h3>
             <p class="feature-description">
-              Your conversations are protected with
-              enterprise-grade security and privacy
-              measures.
+              Your conversations are protected with enterprise-grade security
+              and privacy measures.
             </p>
           </div>
         </div>
@@ -101,36 +82,23 @@ async function handleCreateChat() {
     <UContainer class="benefits-section">
       <div class="benefits-content">
         <div class="benefits-text">
-          <h2 class="section-title">
-            Transform Your Communication
-          </h2>
+          <h2 class="section-title">Transform Your Communication</h2>
           <p class="benefits-description">
-            Our chat platform revolutionizes how you
-            interact with AI. Whether you're seeking
-            information, brainstorming ideas, or having
-            casual conversations, we provide an intuitive
-            and powerful experience.
+            Our chat platform revolutionizes how you interact with AI. Whether
+            you're seeking information, brainstorming ideas, or having casual
+            conversations, we provide an intuitive and powerful experience.
           </p>
           <div class="benefits-list">
             <div class="benefit-item">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="benefit-icon"
-              />
+              <UIcon name="i-heroicons-check-circle" class="benefit-icon" />
               <span>Instant AI responses</span>
             </div>
             <div class="benefit-item">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="benefit-icon"
-              />
+              <UIcon name="i-heroicons-check-circle" class="benefit-icon" />
               <span>Natural conversation flow</span>
             </div>
             <div class="benefit-item">
-              <UIcon
-                name="i-heroicons-check-circle"
-                class="benefit-icon"
-              />
+              <UIcon name="i-heroicons-check-circle" class="benefit-icon" />
               <span>24/7 availability</span>
             </div>
           </div>
@@ -140,7 +108,7 @@ async function handleCreateChat() {
             src="/people.png"
             alt="Communication Benefits"
             class="benefits-img"
-          >
+          />
         </div>
       </div>
     </UContainer>
@@ -151,8 +119,8 @@ async function handleCreateChat() {
         <div class="cta-content">
           <h2 class="cta-title">Ready to Get Started?</h2>
           <p class="cta-subtitle">
-            Join thousands of users who are already
-            experiencing the future of AI conversation.
+            Join thousands of users who are already experiencing the future of
+            AI conversation.
           </p>
           <UButton
             class="cta-button"
@@ -241,10 +209,7 @@ async function handleCreateChat() {
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(300px, 1fr)
-  );
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 3rem;
   padding: 0 2rem;
 }

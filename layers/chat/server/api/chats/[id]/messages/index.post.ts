@@ -16,6 +16,12 @@ import { CreateMessageSchema } from "../../../../schemas";
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event);
+  if (!id) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Chat ID is required",
+    });
+  }
 
   const { success, data } = await readValidatedBody(
     event,
@@ -23,11 +29,14 @@ export default defineEventHandler(async (event) => {
   );
 
   if (!success) {
-    return 400;
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Invalid request",
+    });
   }
 
   return createMessageForChat({
-    chatId: id as string,
+    chatId: id,
     content: data.content,
     role: data.role,
   });
