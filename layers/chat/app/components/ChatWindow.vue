@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { ChatMessage, Chat } from "../../shared/types/types";
 
+throw createError({
+  statusCode: 404,
+  statusMessage: "Ahhhhh!",
+});
+
 const props = defineProps<{
   messages: ChatMessage[];
   chat: Chat | undefined;
