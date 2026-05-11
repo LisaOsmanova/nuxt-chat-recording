@@ -12,6 +12,9 @@
     "lint:fix": "eslint --fix .",
     "prepare": "husky"
   },
+  "prisma": {
+    "seed": "pnpm dlx tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.89",
     "@iconify-json/simple-icons": "^1.2.70",
@@ -31,6 +34,7 @@
     "eslint": "^10.0.0",
     "husky": "^9.1.7",
     "prisma": "6.9.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.4"
   },
